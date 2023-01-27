@@ -21,17 +21,14 @@ productController.getOneProductById
 )
 
 //create product handler
-router.post('/products',
-body('productName').notEmpty().isLength({ max: 100}),
+router.post('/products',body('productName').notEmpty().isLength({ max: 100}),
 body('productPrice').isFloat().notEmpty(),
 productController.createProduct
 );
 
 
 //update product by id handler
-router.put('/products/:id',
-body('productName').isLength({ max: 100}),
-productController.updateOneProductById
+router.put('/products/:id', body('productName').isLength({ max: 100}), productController.updateOneProductById
 )
 
 //delete one product by id
@@ -42,7 +39,25 @@ productController.deleteOneProductById
 
 //user routes
 router.get('/user', userController.getAllUsersHandler);
-router.get('/user/:id', param('id').isUUID(), userController.getUserByIdHandler)
+//get user by id
+router.get('/user/:id', userController.getUserByIdHandler);
+//login user
+router.post('/user/login', body('email').isEmail().notEmpty(),
+body('password').notEmpty(),
+userController.loginUserHandler
+);
+
+//register user
+router.post('/user/register', body('email').isEmail().notEmpty(),
+body('password').notEmpty(),
+body('name').notEmpty(),
+body('role').notEmpty(),
+userController.registerUserHandler
+);
+
+//delete user
+router.delete('/user/:id', param('id').isLength({min: 24, max: 24}), userController.deleteUserHandler);
+
 
 //export router for accessibility by other modules
 export default router;

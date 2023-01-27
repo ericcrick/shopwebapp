@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
 
-//declare user types
-export const userTypes = {
-  "admin": "admin",
-  "user": "user"
-}
-
 //creating product schema for items
 const UserSchema = new mongoose.Schema({
   name: {

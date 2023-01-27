@@ -1,6 +1,11 @@
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *    bearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *      bearerFormat: JWT 
  *   schemas:
  *     Users:
  *       type: object
@@ -30,18 +35,16 @@
  *         createdAt:
  *           type: string
  *           format: date
- *           description: The date the user was created
+ *           description: The date the user was created (auto-generated)
  *         updatedAt:
  *           type: string
  *           format: date
- *           description: The date the user's data was modified
+ *           description: The date the user's data was modified (auto-gerated)
  *       example:
- *         id: d5fE_aszdjdiaodakda
  *         name: eric nana-osei
  *         email: kwabenacrick@outlook.com
+ *         password: userpassword
  *         role: 'admin'
- *         createdAt: 2020-03-10T04:05:06.157Z
- *         updatedAt: 2020-04-10T04:05:06.157Z
  * 
  *
  *tags:
@@ -49,6 +52,7 @@
  *   description: Users Api Management
  * 
  * /user:
+ * 
  *   get:
  *     summary: Lists all the users
  *     tags: [Users]

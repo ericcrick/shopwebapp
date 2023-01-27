@@ -30,12 +30,9 @@
  *           format: date
  *           description: The date the product was modified
  *       example:
- *         id: d5f2aszdjdiadakaodakda
  *         productName: Hp Surface Book
  *         productPrice: 4092.5
  *         productDescription: A mini laptop suitable for office traveling
- *         createdAt: 2020-03-10T04:05:06.157Z
- *         updatedAt: 2020-04-10T04:05:06.157Z
  * 
  *
  *tags:

@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "nodemon server.js",
-    "prod": "node server.js"
+    "start": "node server.js",
+    "prod": "npm run start"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",

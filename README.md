@@ -1,2 +1,2 @@
 # shopwebapp
-A web app developed with nodejs, react and mongodb
+A REST api developed with nodejs and mongodb

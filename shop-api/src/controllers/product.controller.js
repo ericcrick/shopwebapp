@@ -20,43 +20,81 @@ const getAllProducts = async (req, res) => {
 
 //create product handler method
 const createProduct = async (req, res) => {
-  //validate request body
-  try {
-
-    //check if errors are thrown by validation middleware
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }else{
-      //create product if there are no errors
-      const payload = {
-        productName : req.body.productName,
-        productPrice: req.body.productPrice,
-        productDescription: req.body.productDescription,
-      }
-      const product = await ProductService.createProduct(payload);
-      return res.status(201).json(product);
+  //check if errors are thrown by validation middleware
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }else{
+    //create product if there are no errors
+    const payload = {
+      productName : req.body.productName,
+      productPrice: req.body.productPrice,
+      productDescription: req.body.productDescription,
     }
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
+    ProductService.createProduct(payload).then((result)=>{
+      res.status(201).json(result);
+    }).catch((err)=>{
+      res.status(400).json(err);
+    })
   }
 };
 
 // get one product with id, handler method
 const getOneProductById = async(req,res) => {
   try {
+    //get id from request parameter
+
     //check if errors are thrown by validation middleware
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }else{
-      //continue process if no errors are found
-          //get id from request parameter
-    const id = req.params.id;
-    //search product 
-    const product = await ProductService.readOneProductById(id);
-    return res.status(200).json(product);
+      const id = req.params.id;
+      //search product 
+      const product = await ProductService.readOneProductById(id);
+      return res.status(200).json(product);
     }
+
+  } catch (error) {
+    return res.status(400).json({ error: error.message })
+  }
+}
+
+const updateOneProductById = (req, res)=>{
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }else{
+      //update product if there are no errors
+      const updatePayload = {
+        productName : req.body.productName,
+        productPrice: req.body.productPrice,
+        productDescription: req.body.productDescription,
+      }
+      const id = req.params.id;
+      const product = ProductService.updateProductById(id,updatePayload);
+    }
+  } catch (error) {
+    return res.status(400).json({ error: error.message});
+  }
+}
+
+const deleteOneProductById = (req, res)=>{
+  try {
+    //get id from request parameter
+
+    //check if errors are thrown by validation middleware
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }else{
+      const id = req.params.id;
+      //search product 
+      const product = ProductService.deleteOneProduct(id);
+      return res.status(200).json(product);
+    }
+
   } catch (error) {
     return res.status(400).json({ error: error.message })
   }
@@ -66,5 +104,7 @@ const getOneProductById = async(req,res) => {
 export default {
   getAllProducts,
   getOneProductById,
-  createProduct
+  createProduct,
+  updateOneProductById,
+  deleteOneProductById
 }

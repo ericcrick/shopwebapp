@@ -1,35 +1,37 @@
 import mongoose from "mongoose";
 
 //declare user types
-const userTypes = {
+export const userTypes = {
   "admin": "admin",
   "user": "user"
 }
 
 //creating product schema for items
 const UserSchema = new mongoose.Schema({
-  username: {
+  name: {
+    type:String,
+    required:true,
+    minLength:[4,'Name should be minimum of 5 characters']
+  },
+  email:{
+    type:String,
+    required:true,
+    unique:true,
+  },
+  role: {
     type: String,
-    required: true,
+    enum : ['user','admin'],
+    default: 'user'
   },
-  userPassword: {
-    type: String,
-    required: true
+  password:{
+    type:String,
+    required:true,
+    minLength:[8,'Password should be minimum of 8 characters']
   },
-
-  userRole: {
-    type: userTypes,
-    default: userTypes.user,
-    required: true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  modifiedAt: {
-    type: Date,
-    default: Date.now
+  token:{
+    type:String
   }
-});
+},  { timestamps: true }
+);
 
-module.exports = mongoose.model("User", UserSchema);
+export const User =  mongoose.model("User", UserSchema);

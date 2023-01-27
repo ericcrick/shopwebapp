@@ -14,7 +14,7 @@ const readAllProducts = async ()=>{
 using product id */
 const readOneProductById = async (id)=>{
   //find product by id
-  const product = await Product.findById({ id});
+  const product = await Product.findById({ _id: id});
   if(product){
     return product;
   }else{
@@ -27,13 +27,7 @@ const readOneProductById = async (id)=>{
 included is validation to check for duplicate product names */
 const createProduct = async (payload) => {
   const product = new Product({ ...payload });
-  return product.save((err, product)=>{
-    if(err){
-      throw new Error("Error Occured While Saving");
-    }else{
-      return product;
-    }
-  });
+  return await product.save()
 }
 
 //update product
@@ -50,7 +44,7 @@ const updateProductById = (id, updatePayload) => {
     { new: true },
     (err, Product) => {
       if (err) {
-        throw new Error("Error Updating Product")
+        return err;
       } else return Product
     }
   );

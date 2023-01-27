@@ -1,7 +1,10 @@
 import express, { urlencoded } from "express";
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 import { router } from "./src/router/router.js";
 import * as dotenv from 'dotenv';
+
+//configuring dotenv to enable loading of environmental variables
 dotenv.config();
 
 import { mongoDbConnection } from "./src/database/connection.js";
@@ -16,9 +19,15 @@ const app = express();
 mongoDbConnection
 
 
-//middlewares
+//Cofiguring Cross Origin Resource Sharing
 app.use(cors());
+
+//Using express.json to get request of json data
 app.use(express.json())
+//Configuring cookie-parser
+app.use(cookieParser()); 
+
+//usingn urlencoded to parse incoming urls
 app.use(urlencoded({ extended: false }));
 
 //all routers

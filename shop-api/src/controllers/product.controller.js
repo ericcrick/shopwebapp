@@ -1,63 +1,69 @@
-import { body, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import ProductService from '../services/product.service.js';
 
 //get all product controller
-const getAllProducts = async (req, res) => {
-  //find all product
-  const allProduct = await ProductService.readAllProducts();
-  if(allProduct){
-    return res.status(200).json({
-      message: "All Product",
-      data: allProduct
-    });
-  }else{
-    return res.status(500).json({
-      message: "Server Error",
-      data: null
+const getAllProducts = (req, res) => {
+  try {
+    const payload = req.query;
+    //find all product
+    ProductService.readAllProducts(payload).then((result)=>{
+      if(result){
+        if(result){
+          return res.status(200).json(result);
+        }
+        return res.status(404).json({ message: "Product Not Found"});
+      }
+      return res.status(400).json({message: "Invalid Request"});
     })
+    } catch (error) {
+      return res.json({ message: error});
   }
 }
 
 //create product handler method
 const createProduct = async (req, res) => {
-  //check if errors are thrown by validation middleware
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }else{
-    //create product if there are no errors
-    const payload = {
-      productName : req.body.productName,
-      productPrice: req.body.productPrice,
-      productDescription: req.body.productDescription,
-    }
-    ProductService.createProduct(payload).then((result)=>{
-      res.status(201).json(result);
-    }).catch((err)=>{
-      res.status(400).json(err);
-    })
-  }
-};
-
-// get one product with id, handler method
-const getOneProductById = async(req,res) => {
   try {
-    //get id from request parameter
-
     //check if errors are thrown by validation middleware
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }else{
-      const id = req.params.id;
-      //search product 
-      const product = await ProductService.readOneProductById(id);
-      return res.status(200).json(product);
+      //create product if there are no errors
+      const payload = {
+        productName : req.body.productName,
+        productPrice: req.body.productPrice,
+        productDescription: req.body.productDescription,
+      }
+      ProductService.createProduct(payload).then((result)=>{
+        if(result){
+          return res.status(201).json(result);
+        }
+        return res.status(400).json("Invalid Request");
+      }).catch((err)=>{
+        if(err.code === 11000){
+          return res.status(400).json({message: "Product Name Already Exist", status: 400});
+        }
+        res.status(500).json(err);
+      })
     }
-
   } catch (error) {
-    return res.status(400).json({ error: error.message })
+    return res.json({message: "Server Error"});
   }
+};
+
+// get one product with id, handler method
+const getOneProductById = async(req,res) => {
+  //get id from request parameter
+  const id = req.params.id;
+  //search product 
+  ProductService.readOneProductById(id).then((result)=>{
+    if(result){
+      return res.status(200).json(result);
+    }
+    res.status(404).json({message: "Product Not Found"});
+  }).catch((error)=>{
+    return res.status(500).json({message: "Server Error"});
+  })
 }
 
 const updateOneProductById = (req, res)=>{
@@ -73,7 +79,14 @@ const updateOneProductById = (req, res)=>{
         productDescription: req.body.productDescription,
       }
       const id = req.params.id;
-      const product = ProductService.updateProductById(id,updatePayload);
+      ProductService.updateProductById(id,updatePayload).then((result)=>{
+        if(result){
+          return res.status(204).json({message: "Product Updated"});
+        }
+        return res.status(400).json({ message: "Invalid Request"})
+      }).catch((error)=>{
+        return res.status(500).json("Server Error");
+      })
     }
   } catch (error) {
     return res.status(400).json({ error: error.message});
@@ -83,20 +96,19 @@ const updateOneProductById = (req, res)=>{
 const deleteOneProductById = (req, res)=>{
   try {
     //get id from request parameter
-
-    //check if errors are thrown by validation middleware
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }else{
-      const id = req.params.id;
-      //search product 
-      const product = ProductService.deleteOneProduct(id);
-      return res.status(200).json(product);
-    }
+    const id = req.params.id;
+    //search product 
+    ProductService.deleteOneProduct(id).then((result)=>{
+      if(result){
+        return res.status(200).json({messge: "Product Deleted"});
+      }
+      return res.status(404).json({ message: "Product Not Found"})
+    }).catch((error)=>{
+      return res.status(400).json("Invalid Request");
+    })
 
   } catch (error) {
-    return res.status(400).json({ error: error.message })
+    return res.json({ error: error.message })
   }
 }
 

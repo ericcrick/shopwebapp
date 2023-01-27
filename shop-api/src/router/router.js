@@ -17,7 +17,6 @@ router.get('/products', productController.getAllProducts);
 
 //get product by id handler
 router.get('/products/:id',
-param('id').isUUID('all'),
 productController.getOneProductById
 )
 
@@ -31,22 +30,19 @@ productController.createProduct
 
 //update product by id handler
 router.put('/products/:id',
-param('id').isUUID('all'),
 body('productName').isLength({ max: 100}),
-body('productPrice').isFloat(),
 productController.updateOneProductById
 )
 
 //delete one product by id
 router.delete('/products/:id',
-param('id').isUUID('all'),
 productController.deleteOneProductById
 );
 
 
 //user routes
 router.get('/user', userController.getAllUsersHandler);
-
+router.get('/user/:id', param('id').isUUID(), userController.getUserByIdHandler)
 
 //export router for accessibility by other modules
 export default router;

@@ -2,9 +2,20 @@ import { Product } from "../models/product.model.js"
 
 /* A service method for get all a list of all products in available in collection
 with pagination enabled */
-const readAllProducts = async ()=>{
+const readAllProducts = async (paginatePayload)=>{
+  const { page = 1, limit = 5 } = paginatePayload;
   try {
-    return await Product.find();
+    const products =  await Product.find().limit( limit * 1 ).skip((page -1 ) * limit ).exec();
+
+    //get total documents in the product collection
+    const totalCount = await Product.count();
+
+    //return products, totalcount and page number
+    return {
+      products,
+      totalPages: Math.ceil(totalCount/limit),
+      currentPage: page
+    }
   } catch (error) {
     return error;
   }
@@ -13,14 +24,7 @@ const readAllProducts = async ()=>{
 /* A service method for getting one single product 
 using product id */
 const readOneProductById = async (id)=>{
-  //find product by id
-  const product = await Product.findById({ _id: id});
-  if(product){
-    return product;
-  }else{
-    //if product is not found a new error is thrown with message not found
-    throw new Error("Product Not Found")
-  }
+  return await Product.findById({ _id: id});
 }
 
 /* A service method for creating a new product in collection
@@ -31,33 +35,29 @@ const createProduct = async (payload) => {
 }
 
 //update product
-const updateProductById = (id, updatePayload) => {
-  Product.findOneAndUpdate(
+const updateProductById = async (id, updatePayload) => {
+  return await Product.findOneAndUpdate(
     { _id: id },
     {
       $set: {
-        title: updatePayload.productName,
-        description: updatePayload.productPrice,
-        completed: updatePayload.productDescription,
+        productName: updatePayload.productName,
+        productPrice: updatePayload.productPrice,
+        productDescription: updatePayload.productDescription,
       },
-    },
-    { new: true },
-    (err, Product) => {
-      if (err) {
-        return err;
-      } else return Product
     }
   );
 };
 
 //delete product
 const deleteOneProduct = async(id) => {
+  
   //find product and delete product
-  Product.deleteOne({ _id: id}).then(()=>{
-    return "Product Deleted"
-  }).catch((error)=> {
-    throw new Error("Error Deleting Product");
-  })
+  const product = await readOneProductById(id);
+  if(product){
+    return await Product.deleteOne({ _id: id})
+  }
+  return product;
+
 }
 
 

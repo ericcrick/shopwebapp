@@ -17,6 +17,7 @@ router.get('/products', productController.getAllProducts);
 
 //get product by id handler
 router.get('/products/:id',
+param('id').isLength({min: 24, max: 24}),
 productController.getOneProductById
 )
 
@@ -28,19 +29,25 @@ productController.createProduct
 
 
 //update product by id handler
-router.put('/products/:id', body('productName').isLength({ max: 100}), productController.updateOneProductById
+router.put('/products/:id', param('id').isLength({min: 24, max: 24}),
+body('productName').isLength({ max: 100}), productController.updateOneProductById
 )
 
 //delete one product by id
 router.delete('/products/:id',
+param('id').isLength({min: 24, max: 24}),
 productController.deleteOneProductById
 );
 
 
-//user routes
+//get all users
 router.get('/user', userController.getAllUsersHandler);
+
+
 //get user by id
-router.get('/user/:id', userController.getUserByIdHandler);
+router.get('/user/:id', param('id').isLength({min: 24, max: 24}), userController.getUserByIdHandler);
+
+
 //login user
 router.post('/user/login', body('email').isEmail().notEmpty(),
 body('password').notEmpty(),

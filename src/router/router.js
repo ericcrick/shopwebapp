@@ -55,7 +55,7 @@ userController.loginUserHandler
 );
 
 //register user
-router.post('/user/register', body('email').isEmail().notEmpty(),
+router.post('/user', body('email').isEmail().notEmpty(),
 body('password').notEmpty(),
 body('name').notEmpty(),
 body('role').notEmpty(),

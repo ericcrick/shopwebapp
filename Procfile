@@ -1,1 +1,0 @@
-WEB: yarn run prod

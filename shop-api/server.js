@@ -1,4 +1,5 @@
-import express from "express";
+import express, { urlencoded } from "express";
+import cors from 'cors';
 import { router } from "./src/router/router.js";
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -15,9 +16,13 @@ const app = express();
 mongoDbConnection
 
 
-//use routers
-app.use(router)
+//middlewares
+app.use(cors());
+app.use(express.json())
+app.use(urlencoded({ extended: false }));
 
+//all routers
+app.use(router);
 
 
 //starting server on port 8000

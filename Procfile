@@ -1,1 +1,1 @@
-WEB: npm run start
+WEB: npm run prod

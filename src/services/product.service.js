@@ -2,20 +2,10 @@ import { Product } from "../models/product.model.js"
 
 /* A service method for get all a list of all products in available in collection
 with pagination enabled */
-const readAllProducts = async (paginatePayload)=>{
-  const { page = 1, limit = 5 } = paginatePayload;
+const readAllProducts = async ()=>{
   try {
-    const products =  await Product.find().limit( limit * 1 ).skip((page -1 ) * limit ).exec();
+    return await Product.find();
 
-    //get total documents in the product collection
-    const totalCount = await Product.count();
-
-    //return products, totalcount and page number
-    return {
-      products,
-      totalPages: Math.ceil(totalCount/limit),
-      currentPage: page
-    }
   } catch (error) {
     return error;
   }

@@ -3,21 +3,9 @@ import ProductService from '../services/product.service.js';
 
 //get all product controller
 const getAllProducts = (req, res) => {
-  try {
-    const payload = req.query;
-    //find all product
-    ProductService.readAllProducts(payload).then((result)=>{
-      if(result){
-        if(result){
-          return res.status(200).json(result);
-        }
-        return res.status(404).json({ message: "Product Not Found"});
-      }
-      return res.status(400).json({message: "Invalid Request"});
-    })
-    } catch (error) {
-      return res.json({ message: error});
-  }
+  ProductService.readAllProducts().then(result => {
+    res.status(200).json(result);
+  }).catch(error => res.status(500).send("Error Occured"));
 }
 
 //create product handler method
